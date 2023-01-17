@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask_apispec import FlaskApiSpec
 from flask_restful import Api
 
-from resources.example import Examples
+from resources.user import Examples
 
 api_blueprint = Blueprint("api", __name__)
 api = Api(api_blueprint)

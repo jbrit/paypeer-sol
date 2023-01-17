@@ -16,7 +16,7 @@ class Examples(Resource):
     @allow_only_example
     @marshal_with(ExampleSchema(many=True))
     def get(self):
-        return models.Example.query.all()
+        return models.User.query.all()
 
     @marshal_with(ExampleSchema(), code=201)
     def post(self):
