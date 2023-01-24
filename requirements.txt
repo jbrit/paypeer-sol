@@ -8,3 +8,4 @@ gunicorn==20.1.0
 psycopg2-binary==2.9.5
 python-dotenv==0.21.1
 six==1.16.0
+solana==0.29.0

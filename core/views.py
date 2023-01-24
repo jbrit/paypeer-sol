@@ -66,7 +66,7 @@ class RegisterUserView(GenericAPIView):
         return Response(data={"message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class AccountActivation(APIView):
+class AccountActivation(GenericAPIView):
     """
     User activation link is confirmed,
     therefore user's account is activated
