@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from solders.keypair import Keypair
 
 # Create your models here.
 class UserManager(BaseUserManager):
@@ -57,6 +58,16 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.TextField(blank=False, null=False, default="User")
     email_verified = models.BooleanField(default=False)
+    # solana private key
+    private_key = models.BinaryField()
+
+    @property
+    def keypair(self):
+        return Keypair.from_seed(self.private_key)
+
+    @property
+    def public_key(self):
+        return str(self.keypair.pubkey())
     
     def __str__(self):
         return self.user.email
@@ -65,5 +76,6 @@ class Profile(models.Model):
 @receiver(post_save, sender=User)
 def update_user_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance)
+        account = Keypair()
+        Profile.objects.create(user=instance, private_key=account.secret())
     instance.profile.save()
