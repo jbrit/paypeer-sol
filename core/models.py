@@ -7,6 +7,8 @@ from django.dispatch import receiver
 
 from solders.keypair import Keypair
 
+from core.utils import request_airdrop
+
 # Create your models here.
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -77,5 +79,6 @@ class Profile(models.Model):
 def update_user_profile(sender, instance, created, **kwargs):
     if created:
         account = Keypair()
+        request_airdrop(account.pubkey().to_json())
         Profile.objects.create(user=instance, private_key=account.secret())
     instance.profile.save()
