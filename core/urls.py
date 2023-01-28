@@ -1,5 +1,5 @@
 from django.urls import path
-from core.views import RegisterUserView, ChangePasswordView, AccountActivation, PasswordResetView, PasswordResetConfirmView
+from core.views import RegisterUserView, ChangePasswordView, AccountActivation, PasswordResetView, PasswordResetConfirmView, ProfileDetailView
 from rest_framework_simplejwt import views as jwt_views
 
 app_name = "core"
@@ -12,4 +12,5 @@ urlpatterns = [
     path("change-password/", ChangePasswordView.as_view()),
     path("reset-password/", PasswordResetView.as_view()),
     path("reset-password-confirm/", PasswordResetConfirmView.as_view()),
+    path("profile/<int:pk>", ProfileDetailView.as_view()),
 ]

@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views.decorators.debug import sensitive_post_parameters
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework import permissions, status
 from rest_framework.response import Response
@@ -14,6 +14,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from core.serializers.tokens import account_activation_token, password_reset_token
+from core.serializers.profile import ProfileSerializer
 from django.conf import settings
 
 VERIFICATION_URL = settings.VERIFICATION_URL
@@ -154,3 +155,9 @@ class PasswordResetConfirmView(GenericAPIView):
                 {"message": "Password has been reset successfully."}, status=status.HTTP_200_OK
             )
         return Response(data={"message": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProfileDetailView(RetrieveAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.AllowAny]
+    queryset = Profile
