@@ -1,6 +1,8 @@
 import json
 import requests
 
+from rest_framework.views import exception_handler
+
 from solders.rpc.requests import GetBalance, RequestAirdrop
 from solders.rpc.config import RpcContextConfig, RpcRequestAirdropConfig
 from solders.pubkey import Pubkey
@@ -22,3 +24,14 @@ def request_airdrop(pubkey: str):
     body =  RequestAirdrop(Pubkey.from_string(pubkey), 1000000000, config).to_json()
     signature = make_request(body)["result"]
     return signature
+
+def custom_exception_handler(exc, context):
+    # Call REST framework's default exception handler first,
+    # to get the standard error response.
+    response = exception_handler(exc, context)
+
+    # Now add the HTTP status code to the response.
+    if response is not None:
+        if response.data.get("detail"):
+            response.data['message'] = response.data.pop('detail')
+    return response
