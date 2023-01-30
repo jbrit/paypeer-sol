@@ -81,5 +81,10 @@ def update_user_profile(sender, instance, created, **kwargs):
         account = Keypair()
         Profile.objects.create(user=instance, private_key=account.secret())
         # TODO: request airdop after profile create, remember to handle possible error
-        request_airdrop(account.pubkey().to_json())
+        try:
+            request_airdrop(account.pubkey().to_json())
+
+        except Exception:
+            print(account.pubkey())
+            print(account.pubkey().to_json())
     instance.profile.save()
