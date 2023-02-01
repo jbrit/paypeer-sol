@@ -83,6 +83,7 @@ def update_user_profile(sender, instance, created, **kwargs):
         # TODO: remember to handle possible error
         try:
             request_airdrop(str(account.pubkey()))
+            # something to show that airdrop has been requested
         except Exception:
             # errors may occur, idk
             print(account.pubkey())
