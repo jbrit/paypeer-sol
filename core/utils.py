@@ -5,6 +5,8 @@ import requests
 
 from rest_framework.views import exception_handler
 
+from core.constants import NGNC_ADDRESS
+
 from solana.rpc.api import Client
 from solana.rpc.commitment import Confirmed
 
@@ -16,6 +18,7 @@ from solders.commitment_config import CommitmentLevel
 
 from spl.token.constants import TOKEN_PROGRAM_ID
 from spl.token.client import Token
+from spl.token.instructions import get_associated_token_address
 
 make_request = lambda body: requests.post("https://api.devnet.solana.com/", json=json.loads(body)).json()
 
@@ -49,14 +52,18 @@ private_key = os.environ["SOLANA_PRIVATE_KEY"]
 client = Client(endpoint="https://api.devnet.solana.com", commitment=Confirmed)
 owner = Keypair.from_seed(base58.b58decode(private_key))
 
-def get_token_balance():
+def get_token_balance(mint_address=NGNC_ADDRESS):
+    mint = Pubkey.from_string(mint_address)
     token = Token(
         conn=client,
-        pubkey=Pubkey.from_string("BBPQBEAL4uMvyL99Ms6r2vqaVst4RtgZF8Xgnut2x1Lh"),
+        pubkey=mint,
         payer=owner,
         program_id=TOKEN_PROGRAM_ID,
     )
 
-    amount = token.get_account_info(Pubkey.from_string("BBPQBEAL4uMvyL99Ms6r2vqaVst4RtgZF8Xgnut2x1Lh")).amount
+    ata = get_associated_token_address(owner=Pubkey.from_string(mint_address), mint=mint)
 
-    print(amount)
+    amount = token.get_account_info(ata).amount
+    mint_info = token.get_mint_info()
+
+    return amount, mint_info
