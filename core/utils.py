@@ -52,7 +52,7 @@ private_key = os.environ["SOLANA_PRIVATE_KEY"]
 client = Client(endpoint="https://api.devnet.solana.com", commitment=Confirmed)
 owner = Keypair.from_seed(base58.b58decode(private_key))
 
-def get_token_balance(mint_address=NGNC_ADDRESS):
+def get_token_balance(owner_address: str, mint_address=NGNC_ADDRESS):
     mint = Pubkey.from_string(mint_address)
     token = Token(
         conn=client,
@@ -61,7 +61,7 @@ def get_token_balance(mint_address=NGNC_ADDRESS):
         program_id=TOKEN_PROGRAM_ID,
     )
 
-    ata = get_associated_token_address(owner=Pubkey.from_string(mint_address), mint=mint)
+    ata = get_associated_token_address(owner=Pubkey.from_string(owner_address), mint=mint)
 
     amount = token.get_account_info(ata).amount
     mint_info = token.get_mint_info()
