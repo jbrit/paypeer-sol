@@ -16,13 +16,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ["public_key", "email", "name", "ngnc_balance", "usdt_balance"]
 
-    def get_email(self, obj):
+    def get_email(self, obj) -> str:
         return obj.user.email
     
-    def get_ngnc_balance(self, obj):
+    def get_ngnc_balance(self, obj) -> float:
         balance, info = get_token_balance(obj.public_key, NGNC_ADDRESS)
         return balance / (10**info.decimals)
     
-    def get_usdt_balance(self, obj):
+    def get_usdt_balance(self, obj) -> float:
         balance, info = get_token_balance(obj.public_key, USDT_ADDRESS)
         return balance / (10**info.decimals)

@@ -22,6 +22,14 @@ from spl.token.instructions import get_associated_token_address
 
 make_request = lambda body: requests.post("https://api.devnet.solana.com/", json=json.loads(body)).json()
 
+def get_or_create_ata(token: Token, address: Pubkey, mint: Pubkey):
+    # TODO: check if ata initialized then create instead
+    try:
+        ata = token.create_associated_token_account(owner=address)
+    except Exception:
+        ata = get_associated_token_address(owner=address, mint=mint)
+    return ata
+
 def get_balance(pubkey: str):
     config = RpcContextConfig(min_context_slot=1)
     body = GetBalance(Pubkey.from_string(pubkey), config).to_json()
@@ -53,6 +61,7 @@ client = Client(endpoint="https://api.devnet.solana.com", commitment=Confirmed)
 owner = Keypair.from_seed(base58.b58decode(private_key))
 
 def get_token_balance(owner_address: str, mint_address=NGNC_ADDRESS):
+
     mint = Pubkey.from_string(mint_address)
     token = Token(
         conn=client,
@@ -61,7 +70,8 @@ def get_token_balance(owner_address: str, mint_address=NGNC_ADDRESS):
         program_id=TOKEN_PROGRAM_ID,
     )
 
-    ata = get_associated_token_address(owner=Pubkey.from_string(owner_address), mint=mint)
+    ata = get_or_create_ata(token, Pubkey.from_string(owner_address), mint)
+
 
     amount = token.get_account_info(ata).amount
     mint_info = token.get_mint_info()
