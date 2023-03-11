@@ -24,6 +24,7 @@ INSTALLED_APPS = [
 
     # app config here
     "core.apps.CoreConfig",
+    "wallet.apps.WalletConfig",
 
     # third party
     'corsheaders',
