@@ -159,5 +159,8 @@ class PasswordResetConfirmView(GenericAPIView):
 
 class ProfileDetailView(RetrieveAPIView):
     serializer_class = ProfileSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Profile
+
+    def get_object(self):
+        return self.request.user.profile
