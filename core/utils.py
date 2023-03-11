@@ -2,10 +2,10 @@ import base58
 import json
 import os
 import requests
-
+from django.core.exceptions import ValidationError
 from rest_framework.views import exception_handler
 
-from core.constants import NGNC_ADDRESS
+from core.constants import NGNC_ADDRESS, USDT_ADDRESS, CURRENCY_NAMES
 
 from solana.rpc.api import Client
 from solana.rpc.commitment import Confirmed
@@ -21,6 +21,19 @@ from spl.token.client import Token
 from spl.token.instructions import get_associated_token_address
 
 make_request = lambda body: requests.post("https://api.devnet.solana.com/", json=json.loads(body)).json()
+
+def is_valid_pubkey(pubkey):
+    try:
+        Pubkey.from_string(pubkey)
+    except Exception:
+        raise ValidationError("invalid solana account")
+    
+def is_valid_currency(pubkey: str):
+    if pubkey not in (NGNC_ADDRESS, USDT_ADDRESS):
+        raise ValidationError("invalid currency")
+    
+def get_currency_name(pubkey):
+    return CURRENCY_NAMES.get(pubkey, "UNKNOWN")
 
 def get_or_create_ata(token: Token, address: Pubkey, mint: Pubkey):
     # TODO: check if ata initialized then create instead
@@ -77,3 +90,7 @@ def get_token_balance(owner_address: str, mint_address=NGNC_ADDRESS):
     mint_info = token.get_mint_info()
 
     return amount, mint_info
+
+# signatures = client.get_signatures_for_address(Pubkey.from_string("BBPQBEAL4uMvyL99Ms6r2vqaVst4RtgZF8Xgnut2x1Lh")).value[0].signature
+# print(type(signatures))
+# print(signatures)
