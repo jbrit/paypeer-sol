@@ -11,7 +11,7 @@ User = get_user_model()
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
-
+    name = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     confirm_password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
 
@@ -29,13 +29,14 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(validated_data['email'], validated_data['password'])
 
         # update anything extra on user create here
+        user.profile.name = validated_data['name']
 
         user.save()
         return user
     
     class Meta:
         model = User
-        fields = ['email', 'password', 'confirm_password']
+        fields = ['name', 'email', 'password', 'confirm_password']
 
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
