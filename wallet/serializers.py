@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from wallet.models import Transaction, Swap
 from django.contrib.auth import get_user_model
+from core.utils import is_valid_pubkey
 
 class UserInfoSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='profile.name')
@@ -25,3 +26,8 @@ class SwapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Swap
         fields = '__all__'
+
+class TransferSerializer(serializers.Serializer):
+    currency = serializers.ChoiceField(["NGN", "USD"], write_only=True)
+    amount = serializers.IntegerField(write_only=True)
+    destination = serializers.CharField(validators=[is_valid_pubkey],write_only=True)

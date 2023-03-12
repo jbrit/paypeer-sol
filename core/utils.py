@@ -91,6 +91,22 @@ def get_token_balance(owner_address: str, mint_address=NGNC_ADDRESS):
 
     return amount, mint_info
 
+def transfer_tokens(amount: int, owner: Keypair, token_address: str, source_token_account: Pubkey, dest_token_account: Pubkey):
+    token = Token(
+        conn=client,
+        pubkey=token_address,
+        payer=owner,
+        program_id=TOKEN_PROGRAM_ID
+    )
+    result = token.transfer(
+        source=source_token_account,
+        dest=dest_token_account,
+        owner=owner,
+        amount=amount
+    )
+    return result
+
+
 # signatures = client.get_signatures_for_address(Pubkey.from_string("BBPQBEAL4uMvyL99Ms6r2vqaVst4RtgZF8Xgnut2x1Lh")).value[0].signature
 # print(type(signatures))
 # print(signatures)
