@@ -44,6 +44,7 @@ class RegisterUserView(GenericAPIView):
             # TODO: enable when allowing account activation first
             # user.is_active = False
             user.save()
+            """
             current_site = get_current_site(request)
             subject = 'Activate Your Paypeer Account'
             html_message = render_to_string('account_activation_email.html', {
@@ -60,6 +61,7 @@ class RegisterUserView(GenericAPIView):
                 'token': account_activation_token.make_token(user),
                 'url': VERIFICATION_URL
             })
+            """
             # TODO: enable when allowing account activation first
             # user.email_user(subject, message, html_message=html_message)
             data = {"message": "Please check your email to verify your account"}
