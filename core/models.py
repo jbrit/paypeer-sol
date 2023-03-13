@@ -65,7 +65,7 @@ class Profile(models.Model):
 
     @property
     def keypair(self):
-        return Keypair.from_seed(self.private_key)
+        return Keypair.from_seed(list(self.private_key))
 
     @property
     def public_key(self) -> str:
